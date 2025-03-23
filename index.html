@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Calendar & Task Planner</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js" defer></script>
+
+
+
+
+</head>
+<body>
+    <div class="container">
+        <h1>Lunar Calendar & Planner</h1>
+        <p id="current-date"></p>
+
+        <!-- 🌕 Always Visible: Moon Phase & Calendar -->
+        <div id="moon-phase">
+            <p>Moon Phase: <span id="phase-name"></span></p>
+            <img id="moon-image" src="" alt="Moon Phase">
+        </div>
+
+        <!-- 📅 Calendar Navigation -->
+        <div class="calendar-nav">
+            <button id="prevMonth">⬅️ Previous Month</button>
+            <span id="calendarMonth"></span>
+            <button id="nextMonth">Next Month ➡️</button>
+        </div>
+
+        <!-- 📅 Calendar -->
+        <div id="calendar"></div>
+
+        <!-- 🌌 Daily Moon Astrology -->
+        <button class="accordion">🌌 Daily Moon Sign</button>
+        <div class="panel">
+            <p><strong>Moon Sign:</strong> <span id="moonSign">Loading...</span></p>
+            <p id="moonAdvice">🔮 Your moon signwill appearhere...</p>
+        </div>
+
+        <!-- 🎨 Customization -->
+        <button class="accordion">🎨 Customize Your Experience</button>
+        <div class="panel">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span> Dark Mode
+            </label>
+            <select id="themeSelector">
+                <option value="default">🌗 Default</option>
+                <option value="celestial">🌌 Celestial</option>
+                <option value="witchy">🔮 Witchy</option>
+                <option value="minimalist">📏 Minimalist</option>
+                <option value="classic">🏛️ Classic</option>
+            </select>
+            <p>✨ Your selected theme will be saved.</p>
+        </div>
+
+        <!-- 🔮 Horoscope -->
+        <button class="accordion">🔮 Daily Horoscope</button>
+        <div class="panel">
+            <select id="zodiacSign">
+                <option value="aries">♈ Aries</option>
+                <option value="taurus">♉ Taurus</option>
+                <option value="gemini">♊ Gemini</option>
+                <option value="cancer">♋ Cancer</option>
+                <option value="leo">♌ Leo</option>
+                <option value="virgo">♍ Virgo</option>
+                <option value="libra">♎ Libra</option>
+                <option value="scorpio">♏ Scorpio</option>
+                <option value="sagittarius">♐ Sagittarius</option>
+                <option value="capricorn">♑ Capricorn</option>
+                <option value="aquarius">♒ Aquarius</option>
+                <option value="pisces">♓ Pisces</option>
+            </select>
+            <button id="fetchHoroscope">🔮 Get Horoscope</button>
+            <p id="horoscopeResult"></p>
+        </div>
+
+        
+<!-- 🃏 Tarot Readings -->
+<button class="accordion">🃏 Virtual Tarot Deck</button>
+<div class="panel">
+    <button id="shuffleTarot">🔄 Shuffle Deck</button>
+    <button id="drawTarot">✨ Draw a Card</button>
+    <p id="tarotResult">Your card will appear here...</p>
+    <img id="tarotImage" src="" alt="Tarot Card" style="display: none; width: 150px;">
+</div>
+
+
+        <!-- 📖 Lunar Journal -->
+        <button class="accordion">📖 Lunar Journal</button>
+        <div class="panel">
+            <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
+            <button id="saveJournalEntry">💾 Save Entry</button>
+            <input type="text" id="searchJournal" placeholder="Search journal...">
+            <h3>📜 Past Entries</h3>
+            <ul id="journalList"></ul>
+        </div>
+
+        <!-- 📋 Task & Ritual Modal -->
+        <button class="accordion">📋 Task & Ritual Planner</button>
+        <div class="panel">
+            <h3 id="modal-date"></h3>
+            <p><strong>Moon Phase:</strong> <span id="modal-phase"></span></p>
+            <h4>📋 Tasks</h4>
+            <input type="text" id="taskInput" placeholder="Add a task...">
+            <button id="addTask">Add Task</button>
+            <ul id="taskList"></ul>
+
+            <h4>🔮 Rituals</h4>
+            <select id="ritualCategory">
+                <option value="manifestation">🌱 Manifestation</option>
+                <option value="cleansing">🔥 Cleansing</option>
+                <option value="protection">🛡 Protection</option>
+                <option value="reflection">🧘 Reflection</option>
+            </select>
+            <input type="text" id="ritualInput" placeholder="Add a ritual...">
+            <button id="addRitual">Add Ritual</button>
+            <ul id="ritualList"></ul>
+        </div>
+    </div>
+
+
+    
+
+    <script>
+        // ✅ Ensure Tarot Deck Works
+        document.addEventListener("DOMContentLoaded", () => {
+            shuffleDeck(); // Shuffle tarot deck on page load
+            document.getElementById("shuffleTarot").addEventListener("click", shuffleDeck);
+            document.getElementById("drawTarot").addEventListener("click", drawCard);
+        });
+    </script>
+
+
+        <!-- ✅ Updated Tarot API Integration -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                document.getElementById("drawTarot").addEventListener("click", drawCard);
+            });
+    
+            function drawCard() {
+                fetch("https://tarotapi.dev/api/v1/cards/random?n=1")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.cards && data.cards.length > 0) {
+                            const card = data.cards[0];
+    
+                            // Update card result and image
+                            document.getElementById("tarotResult").innerHTML = `<strong>${card.name}</strong>: ${card.meaning_up}`;
+                            document.getElementById("tarotImage").src = card.image;
+                            document.getElementById("tarotImage").style.display = "block";
+                        } else {
+                            document.getElementById("tarotResult").textContent = "No card data received!";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching tarot card:", error);
+                        document.getElementById("tarotResult").textContent = "Error fetching card. Please try again!";
+                    });
+            }
+        </script>
+
+    
+</body>
+</html>
