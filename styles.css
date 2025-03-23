@@ -1,11 +1,14 @@
 /* 🟢 General Styles */
-body {
+html, body {
+    overflow-x: hidden; /* Prevent scrolling sideways */
+    max-width: 100%;
     font-family: Arial, sans-serif;
     text-align: center;
     background-color: #111;
     color: white;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* 📌 Accordion Button */
@@ -14,7 +17,7 @@ body {
     color: white;
     cursor: pointer;
     padding: 15px;
-    width: 95%;
+    width: 80%;
     border: none;
     text-align: left;
     outline: none;
@@ -22,7 +25,9 @@ body {
     transition: 0.4s;
     border-radius: 5px;
     margin-top: 10px;
-    margin-left: 20px;
+    margin-left: 15px;
+    margin-right: 10px;
+    position:relative;
 }
 
 .accordion:hover {
@@ -90,6 +95,8 @@ body {
     padding: 10px;
     border-radius: 5px;
     width: fit-content;  /* Ensure it only takes necessary width */
+
+
 }
 
 /* 📆 Ensure individual day elements are aligned */
@@ -258,6 +265,7 @@ textarea {
 /* 🎨 Theme Styles */
 body {
     transition: background 0.5s, color 0.5s;
+    overflow-x: hidden;
 }
 
 .celestial {
@@ -329,92 +337,65 @@ input:checked + .slider:before {
 
 
 
-
-
 /* 🌍 Responsive Design */
 
-/* 📅 Adjust Calendar Grid for Small Screens */
-@media (max-width: 600px) {
-    #calendar {
-        grid-template-columns: repeat(3, 1fr); /* Show 3 days per row instead of 7 */
-        gap: 3px; /* Reduce spacing for mobile */
-        padding: 5px;
-    }
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Ensure 7 columns */
+    gap: 5px;
+    background: #333;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%; /* Ensure it scales properly */
+    max-width: 800px; /* Keep it responsive */
+    margin: 0 auto; /* Center the calendar */
+    box-sizing: border-box;
+}
 
     .day {
-        padding: 8px;
-        font-size: 14px; /* Make text more readable on small screens */
+        padding: 5px; /* Smaller padding */
+        font-size: 12px; /* Reduce font size */
+        min-width: 30px; /* Ensure each day fits within grid */
+        min-height: 30px; /* Scale down day box */
     }
+
+
+/* 📌 Ensure Accordion and Calendar Stay in Bounds */
+.accordion {
+    width: 100%; /* Adjust to fit the screen */
+    max-width: 800px; /* Keep it reasonable */
+    margin: 10px auto; /* Center it */
+    padding: 12px;
+    box-sizing: border-box;
 }
 
-/* 📌 Ensure Accordions Resize Well */
-@media (max-width: 600px) {
-    .accordion {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-/* 🟢 Make Container Fit Smaller Screens */
+/* 🟢 Adjust Container for Small Screens */
 @media (max-width: 600px) {
     .container {
-        width: 95%;
-        padding: 15px;
+        width: 100%; /* Use full screen width */
+        padding: 5px;
     }
 }
 
 /* 📅 Adjust Calendar Navigation Buttons */
 @media (max-width: 600px) {
     .calendar-nav {
-        flex-direction: column; /* Stack buttons on top of the title */
+        flex-direction: column; /* Stack buttons */
         align-items: center;
-        gap: 5px;
+        gap: 3px;
     }
 
     .calendar-nav button {
-        width: 100%;
-        padding: 8px;
-        font-size: 14px;
+        width: 40%;
+        padding: 6px;
+        font-size: 12px;
     }
 }
 
-/* 🎨 Adjust Inputs & Buttons for Mobile */
+/* 🎨 Resize Inputs & Buttons */
 @media (max-width: 600px) {
     input, select, button {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    button {
+        font-size: 12px;
         padding: 8px;
-    }
-}
-
-/* 📖 Adjust Journal Entries for Small Screens */
-@media (max-width: 600px) {
-    #journalList li {
-        padding: 8px;
-        font-size: 14px;
-    }
-}
-
-/* 🔮 Improve Horoscope Section on Mobile */
-@media (max-width: 600px) {
-    #horoscopeResult {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-/* 🌙 Improve Dark Mode Toggle for Mobile */
-@media (max-width: 600px) {
-    .switch {
-        width: 50px;
-        height: 28px;
-    }
-
-    .slider:before {
-        height: 22px;
-        width: 22px;
     }
 }
