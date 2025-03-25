@@ -35,7 +35,41 @@ function getLastNewMoon() {
     return new Date(currentDate.setDate(currentDate.getDate() - daysAgo));
 }
 
-// ✅ Generate Lunar Calendar
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Existing code...
+    displayJournalEntries();
+
+    // 💾 Attach event listeners
+    document.getElementById("saveJournalEntry").addEventListener("click", saveJournalEntry);
+    document.getElementById("searchJournal").addEventListener("input", searchJournalEntries);
+});
+
+
+
+// Basic Moon Phase Calculator (returns 0–7 index)
+function getMoonPhase(year, month, day) {
+    const c = Math.floor((year / 100));
+    const e = Math.floor((c - 15) / 2) + 202;
+    const jd = Math.floor(365.25 * year) + Math.floor(30.6 * (month + 1)) + day - 694039.09 + e;
+    const phase = jd / 29.53;
+    return Math.floor((phase - Math.floor(phase)) * 8) % 8;
+}
+
+function deleteJournalEntry(index) {
+    if (confirm("Are you sure you want to delete this entry?")) {
+        journalEntries.splice(index, 1);
+        localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+        displayJournalEntries();
+    }
+}
+
+
+
+
+
 function generateLunarCalendar() {
     const calendar = document.getElementById("calendar");
     calendar.innerHTML = "";
@@ -52,9 +86,16 @@ function generateLunarCalendar() {
         dayDiv.dataset.date = date.toISOString().split("T")[0];
 
         let moonPhaseIndex = getMoonPhase(date.getFullYear(), date.getMonth() + 1, date.getDate());
-        let moonPhases = ["🌑 New Moon", "🌒 Waxing Crescent", "🌓 First Quarter", "🌔 Waxing Gibbous", "🌕 Full Moon", "🌖 Waning Gibbous", "🌗 Last Quarter", "🌘 Waning Crescent"];
+        let moonPhases = [
+            "🌑 New Moon", "🌒 Waxing Crescent", "🌓 First Quarter",
+            "🌔 Waxing Gibbous", "🌕 Full Moon", "🌖 Waning Gibbous",
+            "🌗 Last Quarter", "🌘 Waning Crescent"
+        ];
 
-        dayDiv.innerHTML = `<p>${date.toDateString().split(" ")[1]} ${date.getDate()}</p>
+        const dayName = date.toDateString().split(" ")[0]; // e.g., "Mon"
+        const dayNumber = date.getDate();
+
+        dayDiv.innerHTML = `<p>${dayName} ${dayNumber}</p>
                             <p>${moonPhases[moonPhaseIndex]}</p>`;
 
         if (isToday(date)) {
@@ -68,7 +109,9 @@ function generateLunarCalendar() {
     updateCalendarHeader();
 }
 
-// ✅ Generate Gregorian Calendar
+
+
+
 function generateGregorianCalendar() {
     const calendar = document.getElementById("calendar");
     calendar.innerHTML = "";
@@ -78,25 +121,34 @@ function generateGregorianCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         let date = new Date(selectedYear, selectedMonth, day);
 
-        let div = document.createElement("div");
-        div.className = "day";
-        div.textContent = day;
-        div.dataset.date = date.toISOString().split("T")[0];
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "day";
+        dayDiv.dataset.date = date.toISOString().split("T")[0];
 
         let moonPhaseIndex = getMoonPhase(date.getFullYear(), date.getMonth() + 1, date.getDate());
-        let moonPhases = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
-        div.innerHTML += ` <span>${moonPhases[moonPhaseIndex]}</span>`;
+        let moonPhases = ["🌑 New Moon", "🌒 Waxing Crescent", "🌓 First Quarter", "🌔 Waxing Gibbous", "🌕 Full Moon", "🌖 Waning Gibbous", "🌗 Last Quarter", "🌘 Waning Crescent"];
+
+        // Format: "Mon 25"
+        const dayName = date.toDateString().split(" ")[0];
+        const dayNumber = date.getDate();
+
+        dayDiv.innerHTML = `<p>${dayName} ${dayNumber}</p>
+                            <p>${moonPhases[moonPhaseIndex]}</p>`;
 
         if (isToday(date)) {
-            div.classList.add("current-day"); // Highlight today
+            dayDiv.classList.add("current-day");
         }
 
-        div.onclick = () => openPlanner(div.dataset.date);
-        calendar.appendChild(div);
+        dayDiv.onclick = () => openPlanner(dayDiv.dataset.date);
+        calendar.appendChild(dayDiv);
     }
 
     updateCalendarHeader();
 }
+
+
+
+
 
 // ✅ Update Calendar Header (Month & Year)
 function updateCalendarHeader() {
@@ -146,6 +198,9 @@ function isToday(date) {
     );
 }
 
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     // Attach event listeners to the EXISTING buttons in HTML
     document.getElementById("prevMonth").addEventListener("click", () => changeMonth(-1));
@@ -161,6 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Insert only the toggle button (since navigation buttons already exist)
     document.querySelector(".container").insertBefore(toggleButton, document.getElementById("calendar"));
 });
+
+
+
+
 
 
 
@@ -184,136 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // ✅ Generate Google Calendar Event URL
-// function addToGoogleCalendar(taskOrRitual, date) {
-//     const baseURL = "https://calendar.google.com/calendar/render?action=TEMPLATE";
-//     const eventTitle = encodeURIComponent(`🔮 ${taskOrRitual}`);
-//     const eventDetails = encodeURIComponent("Added from Lunar Task & Ritual Planner.");
-    
-//     const eventDate = new Date(date);
-//     const startDate = eventDate.toISOString().split("T")[0] + "T18:00:00Z"; // Default 6 PM UTC
-//     const endDate = eventDate.toISOString().split("T")[0] + "T19:00:00Z"; // 1-hour duration
-
-//     const googleCalendarURL = `${baseURL}&text=${eventTitle}&details=${eventDetails}&dates=${startDate}/${endDate}`;
-    
-//     window.open(googleCalendarURL, "_blank"); // Open Google Calendar event page
-// }
-
-// // ✅ Modify addRitual() to Include Google Calendar Button
-// function addRitual() {
-//     let ritualInput = document.getElementById("ritualInput");
-//     let ritualText = ritualInput.value.trim();
-//     if (!ritualText) return;
-
-//     let selectedDate = parseInt(document.getElementById("modal-date").textContent.split(" ")[1]);
-    
-//     taskData[selectedDate] = taskData[selectedDate] || { tasks: [], rituals: [] };
-//     taskData[selectedDate].rituals.push(ritualText);
-//     localStorage.setItem("taskData", JSON.stringify(taskData));
-
-//     let ritualList = document.getElementById("ritualList");
-//     let li = document.createElement("li");
-//     li.innerHTML = `${ritualText} 
-//         <button onclick="removeRitual(${selectedDate}, '${ritualText}')">❌</button>
-//         <button onclick="addToGoogleCalendar('${ritualText}', '${new Date().toISOString()}')">📆 Add to Google Calendar</button>`;
-//     ritualList.appendChild(li);
-
-//     ritualInput.value = "";
-// }
-
-// // ✅ Modify addTask() to Include Google Calendar Button
-// function addTask() {
-//     let taskInput = document.getElementById("taskInput");
-//     let taskText = taskInput.value.trim();
-//     if (!taskText) return;
-
-//     let selectedDate = parseInt(document.getElementById("modal-date").textContent.split(" ")[1]);
-
-//     taskData[selectedDate] = taskData[selectedDate] || { tasks: [], rituals: [] };
-//     taskData[selectedDate].tasks.push(taskText);
-//     localStorage.setItem("taskData", JSON.stringify(taskData));
-
-//     let taskList = document.getElementById("taskList");
-//     let li = document.createElement("li");
-//     li.innerHTML = `${taskText} 
-//         <button onclick="removeTask(${selectedDate}, '${taskText}')">❌</button>
-//         <button onclick="addToGoogleCalendar('${taskText}', '${new Date().toISOString()}')">📆 Add to Google Calendar</button>`;
-//     taskList.appendChild(li);
-
-//     taskInput.value = "";
-// }
-
-
-
-
-
-
-// // ✅ Request Notification Permission
-// function requestNotificationPermission() {
-//     if (Notification.permission !== "granted") {
-//         Notification.requestPermission().then(permission => {
-//             if (permission === "granted") {
-//                 console.log("Notifications enabled!");
-//             }
-//         });
-//     }
-// }
-
-// // ✅ Send a Browser Notification
-// function sendNotification(title, message) {
-//     if (Notification.permission === "granted") {
-//         new Notification(title, { body: message });
-//     }
-// }
-
-// // ✅ Check for Upcoming Rituals & Moon Phases
-// function checkNotifications() {
-//     const currentDate = new Date();
-//     const currentDay = currentDate.getDate();
-//     const moonPhases = [
-//         "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
-//         "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
-//     ];
-
-//     // 🔹 Check for Moon Phase Changes
-//     const moonPhaseIndex = getMoonPhase(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDay);
-//     if (moonPhaseIndex === 0 || moonPhaseIndex === 4) { // New Moon or Full Moon
-//         sendNotification("🌙 Moon Phase Update", `It's a ${moonPhases[moonPhaseIndex]} today!`);
-//     }
-
-//     // 🔹 Check for Scheduled Rituals
-//     if (taskData[currentDay]?.rituals?.length) {
-//         taskData[currentDay].rituals.forEach(ritual => {
-//             sendNotification("🔮 Ritual Reminder", `Reminder: ${ritual} is scheduled today!`);
-//         });
-//     }
-// }
-
-// // ✅ Run Notifications Check Every Hour
-// setInterval(checkNotifications, 3600000); // 1 hour
-// requestNotificationPermission();
 
 
 
@@ -602,6 +531,12 @@ function deleteJournalEntry(index) {
 
 // Load journal entries on page load
 displayJournalEntries();
+
+
+
+
+
+
 
 
 // ✅ Load User Preferences
