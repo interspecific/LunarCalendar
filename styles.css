@@ -78,7 +78,7 @@ html, body {
 /* 🟢 Ensure the main container is centered */
 .container {
     max-width: 800px;  /* Adjust width if needed */
-    margin: 0 auto;    /* Center the entire container */
+    margin: auto;    /* Center the entire container */
     padding: 20px;
     background: #222;
     border-radius: 10px;
@@ -115,6 +115,7 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    margin: 5px;
 }
 
 #calendarMonth {
@@ -184,7 +185,6 @@ button {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
-    flex-direction: column;
     
 }
 

@@ -16,80 +16,16 @@
         <h1>Lunar Calendar & Planner</h1>
         <p id="current-date"></p>
 
-<!-- 🌟 "More" Accordion (Main) -->
-<button class="accordion">➕ More</button>
-<div class="panel more-panel">
-
-    <!-- 🌕 Always Visible: Moon Phase -->
+    <!-- 🌕 Always Visible: Moon Phase
     <button class="accordion">🌕 Moon Phase</button>
     <div class="panel">
         <p>Moon Phase: <span id="phase-name"></span></p>
         <img id="moon-image" src="" alt="Moon Phase">
-    </div>
+    </div> -->
 
-    <!-- 🌌 Daily Moon Astrology -->
-    <button class="accordion">🌌 Daily Moon Sign</button>
-    <div class="panel">
-        <p><strong>Moon Sign:</strong> <span id="moonSign">Loading...</span></p>
-        <p id="moonAdvice">🔮 Your moon sign will appear here...</p>
-    </div>
-
-    <!-- 🎨 Customization -->
-    <button class="accordion">🎨 Customize Your Experience</button>
-    <div class="panel">
-        <label class="switch">
-            <input type="checkbox" id="darkModeToggle">
-            <span class="slider"></span> Dark Mode
-        </label>
-        <select id="themeSelector">
-            <option value="default">🌗 Default</option>
-            <option value="celestial">🌌 Celestial</option>
-            <option value="witchy">🔮 Witchy</option>
-            <option value="minimalist">📏 Minimalist</option>
-            <option value="classic">🏛️ Classic</option>
-        </select>
-        <p>✨ Your selected theme will be saved.</p>
-    </div>
-
-    <!-- 🔮 Horoscope -->
-    <button class="accordion">🔮 Daily Horoscope</button>
-    <div class="panel">
-        <select id="zodiacSign">
-            <option value="aries">♈ Aries</option>
-            <option value="taurus">♉ Taurus</option>
-            <option value="gemini">♊ Gemini</option>
-            <option value="cancer">♋ Cancer</option>
-            <option value="leo">♌ Leo</option>
-            <option value="virgo">♍ Virgo</option>
-            <option value="libra">♎ Libra</option>
-            <option value="scorpio">♏ Scorpio</option>
-            <option value="sagittarius">♐ Sagittarius</option>
-            <option value="capricorn">♑ Capricorn</option>
-            <option value="aquarius">♒ Aquarius</option>
-            <option value="pisces">♓ Pisces</option>
-        </select>
-        <button id="fetchHoroscope">🔮 Get Horoscope</button>
-        <p id="horoscopeResult"></p>
-    </div>
-
-    <!-- 🃏 Tarot Readings -->
-    <button class="accordion">🃏 Virtual Tarot Deck</button>
-    <div class="panel">
-        <button id="shuffleTarot">🔄 Shuffle Deck</button>
-        <button id="drawTarot">✨ Draw a Card</button>
-        <p id="tarotResult">Your card will appear here...</p>
-        <img id="tarotImage" src="" alt="Tarot Card" style="display: none; width: 150px;">
-    </div>
-
-    <!-- 📖 Lunar Journal -->
-    <button class="accordion">📖 Lunar Journal</button>
-    <div class="panel">
-        <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
-        <button id="saveJournalEntry">💾 Save Entry</button>
-        <input type="text" id="searchJournal" placeholder="Search journal...">
-        <h3>📜 Past Entries</h3>
-        <ul id="journalList"></ul>
-    </div>
+<!-- 🌟 "More" Accordion (Main) -->
+<button class="accordion">➕ More</button>
+<div class="panel more-panel">
 
     <!-- 📋 Task & Ritual Planner -->
     <button class="accordion">📋 Task & Ritual Planner</button>
@@ -112,6 +48,70 @@
         <button id="addRitual">Add Ritual</button>
         <ul id="ritualList"></ul>
     </div>
+
+        <!-- 📖 Lunar Journal -->
+        <button class="accordion">📖 Lunar Journal</button>
+        <div class="panel">
+            <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
+            <button id="saveJournalEntry">💾 Save Entry</button>
+            <input type="text" id="searchJournal" placeholder="Search journal...">
+            <h3>📜 Past Entries</h3>
+            <ul id="journalList"></ul>
+        </div>
+
+    <!-- 🃏 Tarot Readings -->
+    <button class="accordion">🃏 Virtual Tarot Deck</button>
+    <div class="panel">
+        <button id="shuffleTarot">🔄 Shuffle Deck</button>
+        <button id="drawTarot">✨ Draw a Card</button>
+        <p id="tarotResult">Your card will appear here...</p>
+        <img id="tarotImage" src="" alt="Tarot Card" style="display: none; width: 150px;">
+    </div>
+
+
+
+
+
+
+
+    <!-- 🔮 Horoscope -->
+    <button class="accordion">🔮 Daily Horoscope</button>
+    <div class="panel">
+        <select id="zodiacSign">
+            <option value="aries">♈ Aries</option>
+            <option value="taurus">♉ Taurus</option>
+            <option value="gemini">♊ Gemini</option>
+            <option value="cancer">♋ Cancer</option>
+            <option value="leo">♌ Leo</option>
+            <option value="virgo">♍ Virgo</option>
+            <option value="libra">♎ Libra</option>
+            <option value="scorpio">♏ Scorpio</option>
+            <option value="sagittarius">♐ Sagittarius</option>
+            <option value="capricorn">♑ Capricorn</option>
+            <option value="aquarius">♒ Aquarius</option>
+            <option value="pisces">♓ Pisces</option>
+        </select>
+        <button id="fetchHoroscope">🔮 Get Horoscope</button>
+        <p id="horoscopeResult"></p>
+    </div>
+
+
+        <!-- 🎨 Customization -->
+        <button class="accordion">🎨 Customize Your Experience</button>
+        <div class="panel">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span> Dark Mode
+            </label>
+            <select id="themeSelector">
+                <option value="default">🌗 Default</option>
+                <option value="celestial">🌌 Celestial</option>
+                <option value="witchy">🔮 Witchy</option>
+                <option value="minimalist">📏 Minimalist</option>
+                <option value="classic">🏛️ Classic</option>
+            </select>
+            <p>✨ Your selected theme will be saved.</p>
+        </div>    
 
 </div>
 
