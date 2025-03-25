@@ -445,3 +445,18 @@ textarea#journalEntry {
     cursor: pointer;
   }
   
+  .import-label {
+    display: inline-block;
+    background-color: #925bc4;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .import-label:hover {
+    background-color: #7e49a3;
+  }
+  

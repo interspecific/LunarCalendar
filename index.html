@@ -52,12 +52,16 @@
         <div class="panel">
             <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
             <button id="saveJournalEntry">💾 Save Entry</button>
+            <button onclick="exportJournal()">⬇️ Export Journal</button>
+            <label for="importJournalFile" class="import-label">📤 Import Journal</label>
+            <input type="file" id="importJournalFile" style="display:none;" onchange="importJournal()" />
             <input type="text" id="searchJournal" placeholder="Search journal...">
             <h3>📜 Past Entries</h3>
             <ul id="journalList"></ul>
         </div>
 
         
+       
 
 
 

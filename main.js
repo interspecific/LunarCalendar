@@ -70,6 +70,59 @@ function deleteJournalEntry(index) {
 
 
 
+function exportJournal() {
+    const dataStr = JSON.stringify(journalEntries, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "journal_entries.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+
+
+
+
+function importJournal() {
+    const fileInput = document.getElementById("importJournalFile");
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (Array.isArray(imported)) {
+                // Optional: Confirm with the user before overwriting
+                if (confirm("This will replace your current journal entries. Continue?")) {
+                    journalEntries = imported;
+                    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+                    displayJournalEntries();
+                    alert("✅ Journal imported successfully!");
+                }
+            } else {
+                throw new Error("Invalid journal file format.");
+            }
+        } catch (err) {
+            alert("❌ Failed to import journal. Please make sure you're using a valid JSON export.");
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+
+
+
+
+
+
+
 function generateLunarCalendar() {
     const calendar = document.getElementById("calendar");
     calendar.innerHTML = "";
