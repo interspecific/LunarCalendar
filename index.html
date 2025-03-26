@@ -6,6 +6,8 @@
     <title>Lunar Calendar & Task Planner</title>
     <link rel="stylesheet" href="styles.css">
     <script src="main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
 
 
 
@@ -47,18 +49,22 @@
 
     
 
-        <!-- 📖 Lunar Journal -->
-        <button class="accordion">📖 Journal</button>
-        <div class="panel">
-            <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
-            <button id="saveJournalEntry">💾 Save Entry</button>
-            <button onclick="exportJournal()">⬇️ Export Journal</button>
-            <label for="importJournalFile" class="import-label">📤 Import Journal</label>
-            <input type="file" id="importJournalFile" style="display:none;" onchange="importJournal()" />
-            <input type="text" id="searchJournal" placeholder="Search journal...">
-            <h3>📜 Past Entries</h3>
-            <ul id="journalList"></ul>
-        </div>
+<!-- 📖 Lunar Journal -->
+<button class="accordion">📖 Journal</button>
+<div class="panel">
+    <textarea id="journalEntry" placeholder="Write about your day..."></textarea>
+    <button id="saveJournalEntry">💾 Save Entry</button>
+
+    <!-- 🔐 Encrypted Export/Import -->
+    <button onclick="exportJournalEncrypted()">🔐 Export Encrypted</button>
+    <label for="importJournalFile" class="import-label">📤 Import Encrypted</label>
+    <input type="file" id="importJournalFile" style="display:none;" onchange="importJournalEncrypted()" />
+
+    <input type="text" id="searchJournal" placeholder="Search journal...">
+    <h3>📜 Past Entries</h3>
+    <ul id="journalList"></ul>
+</div>
+
 
         
        

@@ -58,26 +58,30 @@ function getMoonPhase(year, month, day) {
     return Math.floor((phase - Math.floor(phase)) * 8) % 8;
 }
 
-function deleteJournalEntry(index) {
-    if (confirm("Are you sure you want to delete this entry?")) {
-        journalEntries.splice(index, 1);
-        localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
-        displayJournalEntries();
-    }
-}
 
 
 
 
 
-function exportJournal() {
-    const dataStr = JSON.stringify(journalEntries, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
+
+
+
+
+
+function exportJournalEncrypted() {
+    const password = prompt("🔐 Enter a password to encrypt your journal:");
+
+    if (!password) return;
+
+    const jsonData = JSON.stringify(journalEntries);
+    const encrypted = CryptoJS.AES.encrypt(jsonData, password).toString();
+
+    const blob = new Blob([encrypted], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "journal_entries.json";
+    a.download = "journal_entries_encrypted.txt";
     a.click();
 
     URL.revokeObjectURL(url);
@@ -87,35 +91,133 @@ function exportJournal() {
 
 
 
-function importJournal() {
+function importJournalEncrypted() {
     const fileInput = document.getElementById("importJournalFile");
     const file = fileInput.files[0];
-
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = function (e) {
+        const password = prompt("🔑 Enter the password to decrypt your journal:");
+        if (!password) return;
+
         try {
-            const imported = JSON.parse(e.target.result);
-            if (Array.isArray(imported)) {
-                // Optional: Confirm with the user before overwriting
-                if (confirm("This will replace your current journal entries. Continue?")) {
-                    journalEntries = imported;
-                    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
-                    displayJournalEntries();
-                    alert("✅ Journal imported successfully!");
-                }
+            const decrypted = CryptoJS.AES.decrypt(e.target.result, password).toString(CryptoJS.enc.Utf8);
+            const imported = JSON.parse(decrypted);
+
+            if (!Array.isArray(imported)) throw new Error("Invalid format");
+
+            const merge = confirm("Merge with existing entries? Click Cancel to replace them.");
+            if (merge) {
+                const combined = [...journalEntries];
+                imported.forEach(newEntry => {
+                    const exists = combined.some(existing =>
+                        existing.date === newEntry.date && existing.text === newEntry.text
+                    );
+                    if (!exists) {
+                        combined.push(newEntry);
+                    }
+                });
+                journalEntries = combined;
             } else {
-                throw new Error("Invalid journal file format.");
+                journalEntries = imported;
             }
+
+            localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+            displayJournalEntries();
+            alert("✅ Journal imported and decrypted successfully!");
         } catch (err) {
-            alert("❌ Failed to import journal. Please make sure you're using a valid JSON export.");
+            alert("❌ Failed to decrypt or import. Make sure the password is correct.");
         }
     };
 
     reader.readAsText(file);
 }
 
+
+
+
+
+
+function deleteJournalEntry(index) {
+    const confirmed = confirm("❌ Are you sure you want to delete this journal entry?");
+    if (!confirmed) return;
+
+    journalEntries.splice(index, 1);
+    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+    displayJournalEntries();
+}
+
+
+
+
+
+
+
+let journalEntries = JSON.parse(localStorage.getItem("journalEntries")) || [];
+
+// 💾 Save Journal Entry
+function saveJournalEntry() {
+    const entryText = document.getElementById("journalEntry").value.trim();
+    if (!entryText) return;
+
+    const currentDate = new Date();
+    const moonPhaseIndex = getMoonPhase(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate());
+    const moonPhases = [
+        "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
+        "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
+    ];
+    const moonPhase = moonPhases[moonPhaseIndex];
+
+    const newEntry = {
+        date: currentDate.toDateString(),
+        moonPhase: moonPhase,
+        text: entryText
+    };
+
+    journalEntries.push(newEntry);
+    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+    
+    document.getElementById("journalEntry").value = ""; // Clear input field
+    displayJournalEntries();
+}
+
+// 📜 Display Saved Journal Entries
+function displayJournalEntries() {
+    const journalList = document.getElementById("journalList");
+    journalList.innerHTML = "";
+
+    journalEntries.forEach((entry, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${entry.date} (${entry.moonPhase})</strong>
+                        <p>${entry.text}</p>
+                        <button onclick="deleteJournalEntry(${index})">❌ Delete</button>`;
+        journalList.appendChild(li);
+    });
+}
+
+// 🔍 Search Journal Entries
+function searchJournalEntries() {
+    const searchText = document.getElementById("searchJournal").value.toLowerCase();
+    const journalList = document.getElementById("journalList");
+    
+    journalList.innerHTML = "";
+
+    journalEntries.forEach((entry, index) => {
+        if (entry.text.toLowerCase().includes(searchText) || entry.moonPhase.toLowerCase().includes(searchText)) {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${entry.date} (${entry.moonPhase})</strong>
+                            <p>${entry.text}</p>
+                            <button onclick="deleteJournalEntry(${index})">❌ Delete</button>`;
+            journalList.appendChild(li);
+        }
+    });
+}
+
+
+
+// Load journal entries on page load
+displayJournalEntries();
 
 
 
@@ -511,79 +613,6 @@ const tarotImageMap = {
 
 
 
-
-
-
-
-let journalEntries = JSON.parse(localStorage.getItem("journalEntries")) || [];
-
-// 💾 Save Journal Entry
-function saveJournalEntry() {
-    const entryText = document.getElementById("journalEntry").value.trim();
-    if (!entryText) return;
-
-    const currentDate = new Date();
-    const moonPhaseIndex = getMoonPhase(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate());
-    const moonPhases = [
-        "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
-        "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
-    ];
-    const moonPhase = moonPhases[moonPhaseIndex];
-
-    const newEntry = {
-        date: currentDate.toDateString(),
-        moonPhase: moonPhase,
-        text: entryText
-    };
-
-    journalEntries.push(newEntry);
-    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
-    
-    document.getElementById("journalEntry").value = ""; // Clear input field
-    displayJournalEntries();
-}
-
-// 📜 Display Saved Journal Entries
-function displayJournalEntries() {
-    const journalList = document.getElementById("journalList");
-    journalList.innerHTML = "";
-
-    journalEntries.forEach((entry, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>${entry.date} (${entry.moonPhase})</strong>
-                        <p>${entry.text}</p>
-                        <button onclick="deleteJournalEntry(${index})">❌ Delete</button>`;
-        journalList.appendChild(li);
-    });
-}
-
-// 🔍 Search Journal Entries
-function searchJournalEntries() {
-    const searchText = document.getElementById("searchJournal").value.toLowerCase();
-    const journalList = document.getElementById("journalList");
-    
-    journalList.innerHTML = "";
-
-    journalEntries.forEach((entry, index) => {
-        if (entry.text.toLowerCase().includes(searchText) || entry.moonPhase.toLowerCase().includes(searchText)) {
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${entry.date} (${entry.moonPhase})</strong>
-                            <p>${entry.text}</p>
-                            <button onclick="deleteJournalEntry(${index})">❌ Delete</button>`;
-            journalList.appendChild(li);
-        }
-    });
-}
-
-// ❌ Delete Journal Entry
-function deleteJournalEntry(index) {
-    journalEntries.splice(index, 1);
-    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
-    displayJournalEntries();
-}
-
-// Load journal entries on page load
-displayJournalEntries();
 
 
 
