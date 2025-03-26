@@ -375,6 +375,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+let calendarData = JSON.parse(localStorage.getItem("calendarData")) || {};
+let selectedDate = null;
+
+// Call this when a date is selected in the calendar
+function openPlannerForDate(dateStr, moonPhase) {
+    selectedDate = dateStr;
+    document.getElementById("modal-date").textContent = selectedDate;
+    document.getElementById("modal-phase").textContent = moonPhase;
+
+    displayTasks();
+    displayRituals();
+}
+
+// 📋 Add Task
+document.getElementById("addTask").addEventListener("click", () => {
+    const task = document.getElementById("taskInput").value.trim();
+    if (!task || !selectedDate) return;
+
+    if (!calendarData[selectedDate]) calendarData[selectedDate] = { tasks: [], rituals: [] };
+    calendarData[selectedDate].tasks.push(task);
+
+    saveCalendarData();
+    document.getElementById("taskInput").value = "";
+    displayTasks();
+});
+
+// 🔮 Add Ritual
+document.getElementById("addRitual").addEventListener("click", () => {
+    const ritual = document.getElementById("ritualInput").value.trim();
+    const category = document.getElementById("ritualCategory").value;
+    if (!ritual || !selectedDate) return;
+
+    if (!calendarData[selectedDate]) calendarData[selectedDate] = { tasks: [], rituals: [] };
+    calendarData[selectedDate].rituals.push({ text: ritual, category: category });
+
+    saveCalendarData();
+    document.getElementById("ritualInput").value = "";
+    displayRituals();
+});
+
+// 💾 Save to localStorage
+function saveCalendarData() {
+    localStorage.setItem("calendarData", JSON.stringify(calendarData));
+}
+
+// 📋 Show Tasks
+function displayTasks() {
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+    const tasks = (calendarData[selectedDate]?.tasks) || [];
+    tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${task} <button onclick="deleteTask(${index})">❌</button>`;
+        taskList.appendChild(li);
+    });
+}
+
+// 🔮 Show Rituals
+function displayRituals() {
+    const ritualList = document.getElementById("ritualList");
+    ritualList.innerHTML = "";
+    const rituals = (calendarData[selectedDate]?.rituals) || [];
+    rituals.forEach((ritual, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${ritual.text} (${ritual.category}) <button onclick="deleteRitual(${index})">❌</button>`;
+        ritualList.appendChild(li);
+    });
+}
+
+// ❌ Delete Task
+function deleteTask(index) {
+    if (!selectedDate || !calendarData[selectedDate]) return;
+    calendarData[selectedDate].tasks.splice(index, 1);
+    saveCalendarData();
+    displayTasks();
+}
+
+// ❌ Delete Ritual
+function deleteRitual(index) {
+    if (!selectedDate || !calendarData[selectedDate]) return;
+    calendarData[selectedDate].rituals.splice(index, 1);
+    saveCalendarData();
+    displayRituals();
+}
 
 
 

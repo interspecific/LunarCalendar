@@ -24,17 +24,31 @@
 <button class="accordion">➕ More</button>
 <div class="panel more-panel">
 
-    <!-- 📋 Task & Ritual Planner -->
-    <button class="accordion">📋 Task, Event, and Ritual Planner</button>
-    <div class="panel">
-        <h3 id="modal-date"></h3>
-        <p><strong>Moon Phase:</strong> <span id="modal-phase"></span></p>
-        <h4>📋 Tasks</h4>
+<!-- 📋 Task, Event, and Ritual Planner -->
+<button class="accordion">📋 Task, Event, and Ritual Planner</button>
+<div class="panel">
+    <h3 id="modal-date">Select a date</h3>
+    <p><strong>🌕 Moon Phase:</strong> <span id="modal-phase">N/A</span></p>
+
+    <!-- Tasks Section -->
+    <h4>📋 Tasks</h4>
+    <div class="task-input-group">
         <input type="text" id="taskInput" placeholder="Add a task...">
         <button id="addTask">Add Task</button>
-        <ul id="taskList"></ul>
+    </div>
+    <ul id="taskList"></ul>
 
-        <h4>🔮 Rituals</h4>
+    <!-- Events Section -->
+    <h4>📆 Events</h4>
+    <div class="event-input-group">
+        <input type="text" id="eventInput" placeholder="Add an event...">
+        <button id="addEvent">Add Event</button>
+    </div>
+    <ul id="eventList"></ul>
+
+    <!-- Rituals Section -->
+    <h4>🔮 Rituals</h4>
+    <div class="ritual-input-group">
         <select id="ritualCategory">
             <option value="manifestation">🌱 Manifestation</option>
             <option value="cleansing">🔥 Cleansing</option>
@@ -43,8 +57,18 @@
         </select>
         <input type="text" id="ritualInput" placeholder="Add a ritual...">
         <button id="addRitual">Add Ritual</button>
-        <ul id="ritualList"></ul>
     </div>
+    <ul id="ritualList"></ul>
+
+    <!-- Export/Import Buttons -->
+    <div style="margin-top: 20px;">
+        <button onclick="exportPlannerData()">⬇️ Export Planner Data</button>
+        <label for="importPlannerFile" class="import-label">📤 Import Planner Data</label>
+        <input type="file" id="importPlannerFile" style="display:none;" onchange="importPlannerData()" />
+    </div>
+</div>
+
+
 
 
     
